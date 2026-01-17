@@ -32,6 +32,25 @@ program
   .option('-s, --skill <skills...>', 'Specify skill names to install (skip selection prompt)')
   .option('-l, --list', 'List available skills in the repository without installing')
   .option('-y, --yes', 'Skip confirmation prompts')
+  .configureOutput({
+    outputError: (str, write) => {
+      if (str.includes('missing required argument')) {
+        console.log();
+        console.log(chalk.bgRed.white.bold(' ERROR ') + ' ' + chalk.red('Missing required argument: source'));
+        console.log();
+        console.log(chalk.dim('  Usage:'));
+        console.log(`    ${chalk.cyan('npx add-skill')} ${chalk.yellow('<source>')} ${chalk.dim('[options]')}`);
+        console.log();
+        console.log(chalk.dim('  Example:'));
+        console.log(`    ${chalk.cyan('npx add-skill')} ${chalk.yellow('vercel-labs/agent-skills')}`);
+        console.log();
+        console.log(chalk.dim('  Run') + ` ${chalk.cyan('npx add-skill --help')} ` + chalk.dim('for more information.'));
+        console.log();
+      } else {
+        write(str);
+      }
+    }
+  })
   .action(async (source: string, options: Options) => {
     await main(source, options);
   });
